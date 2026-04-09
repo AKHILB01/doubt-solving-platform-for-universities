@@ -10,6 +10,7 @@
     "aos": "^2.3.4",
     "axios": "^1.8.4",
     "cloudinary": "^1.41.3",
+    "firebase": "^12.11.0",
     "framer-motion": "^12.7.4",
     "multer": "^1.4.5-lts.2",
     "multer-storage-cloudinary": "^4.0.0",
