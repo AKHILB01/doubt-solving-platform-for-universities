@@ -2,6 +2,6 @@
 .env
 .env.local
 .env.production
-
+node modules/
 # MongoDB credentials
 *.env
