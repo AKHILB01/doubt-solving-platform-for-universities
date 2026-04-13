@@ -15,6 +15,8 @@ const UploadDoubt = () => {
   const [recording, setRecording] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const isAudioSelected = file?.type?.startsWith("audio");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,18 @@ const UploadDoubt = () => {
     }
   };
 
+  const revokeAudioURL = () => {
+    if (audioURL) {
+      URL.revokeObjectURL(audioURL);
+    }
+  };
+
+  const handleRemoveAudio = () => {
+    revokeAudioURL();
+    setFile(null);
+    setAudioURL(null);
+  };
+
   const handleStartRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -50,6 +64,7 @@ const UploadDoubt = () => {
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: "audio/webm" });
         const audio = new File([blob], "voice_note.webm", { type: "audio/webm" });
+        revokeAudioURL();
         setFile(audio);
         setAudioURL(URL.createObjectURL(blob));
       };
@@ -186,6 +201,12 @@ const UploadDoubt = () => {
               <source src={audioURL} type="audio/webm" />
               Your browser does not support the audio element.
             </audio>
+          )}
+
+          {(audioURL || isAudioSelected) && (
+            <button type="button" onClick={handleRemoveAudio} className={styles.voiceBtn}>
+              🗑️ Remove audio and record again
+            </button>
           )}
 
           <button type="submit" disabled={loading} className={styles.submitBtn}>
