@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { createWorker } from 'tesseract.js';
 import styles from "./UploadDoubt.module.scss";
 
 const UploadDoubt = () => {
@@ -14,6 +15,8 @@ const UploadDoubt = () => {
   const [audioURL, setAudioURL] = useState(null);
   const [recording, setRecording] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [ocrText, setOcrText] = useState("");
+  const [isProcessingOCR, setIsProcessingOCR] = useState(false);
 
   const isAudioSelected = file?.type?.startsWith("audio");
 
@@ -25,7 +28,7 @@ const UploadDoubt = () => {
     setUser({ ...storedUser, _id: id });
   }, []);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const validTypes = ["image/jpeg", "image/png", "audio/webm", "audio/wav", "audio/mp3"];
@@ -38,6 +41,31 @@ const UploadDoubt = () => {
         return;
       }
       setFile(selectedFile);
+
+      // Process OCR for images
+      if (selectedFile.type.startsWith('image')) {
+        await processOCR(selectedFile);
+      } else {
+        setOcrText(""); // Clear OCR text for non-image files
+      }
+    }
+  };
+
+  const processOCR = async (imageFile) => {
+    setIsProcessingOCR(true);
+    try {
+      const worker = await createWorker('eng');
+      const { data: { text } } = await worker.recognize(imageFile);
+      await worker.terminate();
+      setOcrText(text);
+      if (text.trim()) {
+        alert(`Text extracted from image: ${text.substring(0, 100)}...`);
+      }
+    } catch (error) {
+      console.error('OCR processing failed:', error);
+      alert('Failed to extract text from image. You can still describe your doubt manually.');
+    } finally {
+      setIsProcessingOCR(false);
     }
   };
 
@@ -161,6 +189,31 @@ const UploadDoubt = () => {
             onChange={(e) => setText(e.target.value)}
             className={styles.textarea}
           />
+
+          {ocrText && (
+            <div className={styles.ocrSection}>
+              <h4>📄 Extracted Text from Image:</h4>
+              <textarea
+                value={ocrText}
+                readOnly
+                className={styles.ocrTextarea}
+                placeholder="OCR extracted text will appear here"
+              />
+              <button
+                type="button"
+                onClick={() => setText(prev => prev + (prev ? '\n\n' : '') + ocrText)}
+                className={styles.addOcrButton}
+              >
+                ➕ Add to Doubt Text
+              </button>
+            </div>
+          )}
+
+          {isProcessingOCR && (
+            <div className={styles.processing}>
+              🔍 Processing image for text extraction...
+            </div>
+          )}
 
           <label htmlFor="file-upload" className={styles.uploadLabel}>
             {file ? file.name : "Click to upload image or voice file"}

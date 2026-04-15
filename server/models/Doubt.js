@@ -11,6 +11,8 @@ const doubtSchema = new mongoose.Schema({
   responseAudio: { type: String, default: null },
   status: { type: String, default: 'pending' },
   isSolved: { type: Boolean, default: false },
+  summary: { type: String, default: null }, // AI-generated summary
+  keyTerms: [{ type: String }], // AI-extracted key terms
 }, { timestamps: true });
 
 module.exports = mongoose.model("Doubt", doubtSchema);

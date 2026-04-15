@@ -44,6 +44,24 @@ const DoubtDetails = () => {
 
       {doubt.doubtText && <p className={styles.text}>{doubt.doubtText}</p>}
 
+      {doubt.summary && (
+        <div className={styles.aiSection}>
+          <h4>🤖 AI Summary:</h4>
+          <p className={styles.summary}>{doubt.summary}</p>
+        </div>
+      )}
+
+      {doubt.keyTerms && doubt.keyTerms.length > 0 && (
+        <div className={styles.aiSection}>
+          <h4>🔑 Key Terms:</h4>
+          <div className={styles.keyTerms}>
+            {doubt.keyTerms.map((term, index) => (
+              <span key={index} className={styles.termTag}>{term}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {doubt.doubtImage && (
         <img
           src={`http://localhost:5000${doubt.doubtImage}`}

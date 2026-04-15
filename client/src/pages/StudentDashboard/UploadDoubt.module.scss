@@ -199,6 +199,67 @@ $bg-darker: #0a0a0a;
   }
 }
 
+// OCR Section Styles
+.ocrSection {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba($bg-darker, 0.8);
+  border: 1px solid rgba($primary-gold, 0.3);
+  border-radius: 8px;
+
+  h4 {
+    color: $primary-gold;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+.ocrTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  background: rgba($bg-dark, 0.8);
+  border: 1px solid rgba($primary-gold, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-gold;
+    box-shadow: 0 0 10px rgba($primary-gold, 0.2);
+  }
+}
+
+.addOcrButton {
+  background: linear-gradient(135deg, $primary-gold 0%, $dark-gold 100%);
+  color: $bg-dark;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba($primary-gold, 0.4);
+  }
+}
+
+.processing {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba($primary-gold, 0.1);
+  border: 1px solid $primary-gold;
+  border-radius: 4px;
+  color: $light-gold;
+  text-align: center;
+  font-weight: 500;
+}
+
 .voiceControls {
   display: flex;
   justify-content: center;

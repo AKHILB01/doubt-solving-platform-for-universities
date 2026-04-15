@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
 const doubtRoutes = require("./routes/doubtRoutes");
+const ollamaService = require("./utils/ollama");
 
 // ...
 
@@ -128,8 +129,16 @@ app.get("/", (req, res) => {
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => {
+}).then(async () => {
   console.log("✅ MongoDB connected");
+
+  // Initialize Ollama service
+  try {
+    await ollamaService.initialize();
+  } catch (error) {
+    console.warn("⚠️ Ollama initialization failed, AI features will be unavailable:", error.message);
+  }
+
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);

@@ -326,3 +326,68 @@ $transition-base: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     gap: 0.5rem;
   }
 }
+
+// AI Analysis Section
+// -------------------
+.aiSection {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: rgba($bg-darker, 0.5);
+  border: 1px solid rgba($gold-primary, 0.3);
+  border-radius: $border-radius;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, $gold-primary, $gold-light);
+    border-radius: $border-radius $border-radius 0 0;
+  }
+
+  h4 {
+    color: $gold-primary;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.summary {
+  color: $text-primary;
+  line-height: 1.6;
+  font-style: italic;
+  padding: 0.5rem;
+  background: rgba($gold-tint, 0.1);
+  border-left: 3px solid $gold-primary;
+  border-radius: 0 $border-radius $border-radius 0;
+}
+
+.keyTerms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.termTag {
+  background: linear-gradient(135deg, $gold-primary, $gold-dark);
+  color: $bg-dark;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    @include subtle-glow($gold-primary, 0.6);
+  }
+}

@@ -18,6 +18,8 @@ const {
   markDoubtAsSolved
 } = require("../controllers/doubtController");
 
+const ollamaService = require("../utils/ollama");
+
 // Existing multer storage for teacher uploads (responses)
 const teacherStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -64,5 +66,31 @@ router.put("/:id/mark-solved", markDoubtAsSolved);
 // Teacher dashboard route
 router.get("/teacher/all-doubts", getAllDoubtsForTeacher);
 router.patch("/toggleSolved/:id", toggleSolvedStatus);
+
+// AI Test Route
+router.post('/test-ai', async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required for AI testing' });
+    }
+
+    const summary = await ollamaService.summarizeText(text);
+    const keyTerms = await ollamaService.extractKeyTerms(text);
+
+    res.json({
+      originalText: text,
+      summary,
+      keyTerms,
+      status: 'AI processing successful'
+    });
+  } catch (error) {
+    console.error('AI test failed:', error);
+    res.status(500).json({
+      error: 'AI processing failed',
+      details: error.message
+    });
+  }
+});
 
 module.exports = router;

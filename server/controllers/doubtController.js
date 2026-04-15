@@ -2,6 +2,7 @@ const Doubt = require("../models/Doubt");
 const User = require("../models/User");
 const path = require("path");
 const fs = require("fs");
+const ollamaService = require("../utils/ollama");
 
 // Upload a doubt
 exports.uploadDoubt = async (req, res) => {
@@ -28,6 +29,29 @@ exports.uploadDoubt = async (req, res) => {
     });
 
     await newDoubt.save();
+
+    // Generate AI summary and key terms asynchronously after save
+    if (doubtText?.trim()) {
+      try {
+        // Generate summary asynchronously (don't block upload)
+        ollamaService.summarizeText(doubtText.trim()).then(aiSummary => {
+          Doubt.findByIdAndUpdate(newDoubt._id, { summary: aiSummary }).catch(err =>
+            console.error('Failed to update summary:', err)
+          );
+        }).catch(err => console.error('Summary generation failed:', err));
+
+        // Extract key terms asynchronously
+        ollamaService.extractKeyTerms(doubtText.trim()).then(terms => {
+          Doubt.findByIdAndUpdate(newDoubt._id, { keyTerms: terms }).catch(err =>
+            console.error('Failed to update key terms:', err)
+          );
+        }).catch(err => console.error('Key terms extraction failed:', err));
+      } catch (error) {
+        console.error('AI processing initialization failed:', error);
+        // Continue with upload even if AI fails
+      }
+    }
+
     await User.findByIdAndUpdate(studentId, { $inc: { doubtUploadCount: 1 } });
 
     res.status(201).json({ message: "Doubt uploaded successfully", doubt: newDoubt });
